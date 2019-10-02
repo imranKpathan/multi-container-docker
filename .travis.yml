@@ -20,3 +20,16 @@ after_success:
   - docker push imrankpathan/multi-container-nginx
   - docker push imrankpathan/multi-container-server
   - docker push imrankpathan/multi-container-worker
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-west-2"
+  app: "multi-container-docker"
+  env: "MultiContainerDocker-env"
+  bucket_name: elasticbeanstalk-eu-west-2-978994261530
+  bucket_path: "multi-container-docker"
+  on:
+    branch: master
+  access_key_id:
+    secure: "$AWS_ACCESS_KEY"
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
