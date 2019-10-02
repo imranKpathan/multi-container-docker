@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t imrankpathan/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run imrankpathan/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t imrankpathan/multi-container-client ./client
+  - docker build -t imrankpathan/multi-container-nginx ./nginx
+  - docker build -t imrankpathan/multi-container-server ./server
+  - docker build -t imrankpathan/multi-container-worker ./worker
+  # Log in to the Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push to Docker Hub
+  - docker push imrankpathan/multi-container-client
+  - docker push imrankpathan/multi-container-nginx
+  - docker push imrankpathan/multi-container-server
+  - docker push imrankpathan/multi-container-worker
